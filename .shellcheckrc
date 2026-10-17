@@ -1,0 +1,10 @@
+# shellcheck configuration
+# Enable all checks except those explicitly disabled below
+enable=all
+
+# Disable SC2034 (unused variable) for variables used in sourced scripts
+# Disable SC2155 (declare and assign separately) - we use declare + assign in run.sh
+disable=SC2034,SC2155
+
+# Shell to check (bash)
+shell=bash
