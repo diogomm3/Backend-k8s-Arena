@@ -1,3 +1,4 @@
+---
 name: Lint
 
 on:
@@ -17,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       - name: Setup Node.js
-        uses: actions/setup-node@v4  # v4.0.0
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4.0.0
         with:
           node-version: '20'
       - name: Install and run markdownlint
@@ -31,13 +32,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
-      - name: Install shellcheck
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y shellcheck
-          shellcheck --version
       - name: Run shellcheck
-        run: shellcheck --exclude=SC2034,SC2155 $(find . -name "*.sh" -not -path "./.git/*")
+        uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38  # v2.0.0
+        with:
+          scandir: '.'
+          exclude: 'SC2034 SC2155'
 
   yamllint:
     name: yamllint
@@ -45,9 +44,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
-      - name: Install yamllint
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y yamllint
       - name: Run yamllint
-        run: yamllint -c .yamllint.yml .
+        uses: ibiqlik/action-yamllint@ae1abb2821b567e96742aa776f7b62c9b6a26bc8  # v3
+        with:
+          config_file: '.yamllint.yml'
