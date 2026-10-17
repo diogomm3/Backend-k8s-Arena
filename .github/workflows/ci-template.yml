@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       changed-backends:
-        description: "JSON array of changed backend directories for testing"
+        description: "JSON array of changed backend directories for testing (e.g. [\"python\", \"go\"])"
         required: false
         type: string
         default: '[]'
@@ -34,7 +34,7 @@ jobs:
         run: |
           # Input is a JSON array like '["python", "go"]'
           # Convert to matrix format: {"include": [{"backend": "python"}, {"backend": "go"}]}
-          BACKENDS="${{ inputs.changed-backends }}"
+          BACKENDS='${{ inputs.changed-backends }}'
           if [ "$BACKENDS" = "[]" ] || [ -z "$BACKENDS" ]; then
             echo 'matrix={"include": []}' >> "$GITHUB_OUTPUT"
             echo 'has-backends=false' >> "$GITHUB_OUTPUT"
