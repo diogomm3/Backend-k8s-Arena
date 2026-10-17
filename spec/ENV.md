@@ -23,6 +23,40 @@ All configuration is through environment variables. No config files, no secrets 
 
 ---
 
+## Runtime Behaviour (normative)
+
+### Startup Validation
+
+- Missing required variable (`DATABASE_URL`, `TOKEN_SECRET`) → exit non-zero with clear message.
+- `TOKEN_SECRET` shorter than **32 bytes** (UTF-8) → exit non-zero.
+- `DB_POOL_SIZE` or `DB_ACQUIRE_TIMEOUT_MS` not a positive integer → exit non-zero.
+
+### Startup Order
+
+- Backend **must start and answer `GET /health`** even if Postgres is unreachable.
+- DB endpoints (`/feed`, `/posts/*`) return `503 SERVICE_UNAVAILABLE` until the database is reachable.
+- Process **must never exit** because of DB unavailability; must reconnect on demand.
+
+### Pool Lifecycle
+
+- Pool maximum = `DB_POOL_SIZE` (no required minimum, no pre-warming; connections opened on demand).
+- Idle timeout and max lifetime **disabled or ≥ 1 hour** (connections not churned during a test).
+- Waiting requests queue until `DB_ACQUIRE_TIMEOUT_MS`; then 503 `SERVICE_UNAVAILABLE`.
+
+### Network
+
+- Every backend listens on **all interfaces (`0.0.0.0`)** on `PORT`.
+
+### Process Model
+
+- **One process per container**. No worker-count variable (intentionally omitted).
+
+### Prepared Statements
+
+- Each backend's `README.md` must state its prepared-statement behaviour (driver default), since it matters for a future PgBouncer scenario.
+
+---
+
 ## Notes
 
 - Every backend must read these exact variable names.

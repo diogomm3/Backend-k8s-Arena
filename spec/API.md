@@ -1,7 +1,7 @@
 # API Contract
 
 **Version:** 1.0  
-**Status:** Stable (frozen for Phase 1 backends)
+**Status:** Stable. Any change after merge requires a spec version bump and the human's explicit approval.
 
 ---
 
@@ -34,7 +34,11 @@ Error responses use the error format in §4.
 
 ### 2.2 Verification Algorithm (in-process, no DB)
 
+The following checks are **normative** — all backends must reject invalid input at these points with `401 INVALID_TOKEN`, never `500`.
+
 ```python
+import re
+
 def verify(token: str, secret: str) -> int | None:
     # 1. Split on '.'
     parts = token.split('.')
@@ -42,20 +46,27 @@ def verify(token: str, secret: str) -> int | None:
         return None
     user_id_str, sig_b64url = parts
 
-    # 2. Validate user_id format (canonical decimal)
-    if not user_id_str.isdigit() or user_id_str.startswith('0'):
+    # 2. Validate user_id format: ASCII digits only, no leading zeros, range 1..2147483647
+    # ^[1-9][0-9]*$ ensures ASCII-only and no leading zeros
+    if not re.fullmatch(r'[1-9][0-9]*', user_id_str):
         return None
     user_id = int(user_id_str)
     if not (1 <= user_id <= 2147483647):
         return None
 
-    # 3. Compute expected signature over the EXACT user_id string
+    # 3. Validate signature format BEFORE constant-time compare:
+    # base64url without padding = 43 chars for SHA-256 (256 bits = 32 bytes = 43 base64url chars)
+    if not re.fullmatch(r'[A-Za-z0-9_-]{43}', sig_b64url):
+        return None
+
+    # 4. Compute expected signature over the EXACT user_id string (ASCII bytes)
     expected = base64.urlsafe_b64encode(
         hmac.new(secret.encode('utf-8'), user_id_str.encode('utf-8'), hashlib.sha256).digest()
     ).decode().rstrip('=')
 
-    # 4. Constant-time compare on ENCODED strings (rejects non-canonical base64url)
-    if not hmac.compare_digest(expected, sig_b64url):
+    # 5. Constant-time compare on ENCODED strings (rejects non-canonical base64url)
+    # Use bytes comparison to avoid TypeError on non-ASCII
+    if not hmac.compare_digest(expected.encode('ascii'), sig_b64url.encode('ascii')):
         return None
 
     return user_id
@@ -95,8 +106,10 @@ done
 | Tampered (last char flipped) | `42.YwNBhb1bsMu0eITkUgdiyYnrbw333GRFbOGQ8bEGNDA` |
 | Non-canonical (padding `=`) | `42.YwNBhb1bsMu0eITkUgdiyYnrbw333GRFbOGQ8bEGNDc=` |
 | Non-canonical (alt char `d` decodes to same bytes) | `42.YwNBhb1bsMu0eITkUgdiyYnrbw333GRFbOGQ8bEGNDd` |
+| Non-ASCII digits in user_id (U+0660‑U+0669) | `٠٤٢.YwNBhb1bsMu0eITkUgdiyYnrbw333GRFbOGQ8bEGNDc` |
+| Non-ASCII in signature | `42.YwNBhb1bsMu0eITkUgdiyYnrbw333GRFbOGQ8bEGNDé` |
 
-**Conformance must reject both non-canonical vectors** (backends compare encoded strings in constant time, do not decode).
+**Conformance must reject both non-canonical vectors and both non-ASCII vectors** (backends compare encoded strings in constant time, do not decode; all checks return `401 INVALID_TOKEN`, never `500`).
 
 ---
 
@@ -214,6 +227,13 @@ Precedence order (first match wins):
 
 - `GET /feed`, `GET /posts/{id}`, `POST /posts/{id}/like` **ignore request body and Content-Type**.
 - All endpoints return `Content-Type: application/json` (errors included).
+- Step 4 checks are evaluated **top to bottom in the order listed**.
+
+### 5.1 Routing Edge Cases (Conformance Cases)
+
+- Trailing slash (e.g., `/feed/`) → unknown route → `404 NOT_FOUND` (no redirects).
+- `HEAD` on any route → `405 METHOD_NOT_ALLOWED` with JSON error body.
+- `OPTIONS` on any route → `405 METHOD_NOT_ALLOWED` with JSON error body.
 
 ---
 

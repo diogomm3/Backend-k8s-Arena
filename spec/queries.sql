@@ -4,6 +4,8 @@
 -- ALL parameters are explicitly cast (::int, ::text) so strict
 -- drivers (asyncpg, pgx) and lenient ones behave identically.
 -- ALL counts are cast to ::int — no bigint reaches responses.
+-- CI verbatim check: compares statements ignoring `--` comment lines
+-- and surrounding whitespace (leading/trailing, blank lines).
 -- ============================================================
 
 -- name: health
