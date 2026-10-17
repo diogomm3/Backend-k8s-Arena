@@ -69,4 +69,3 @@ jobs:
         run: |
           # TODO: Implement - placeholder
           echo "SQL verification placeholder for ${{ matrix.backend }}"
-
