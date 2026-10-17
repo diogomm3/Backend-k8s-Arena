@@ -23,7 +23,7 @@ jobs:
       - name: Install and run markdownlint
         run: |
           npm install markdownlint-cli@0.34.0
-          ./node_modules/.bin/markdownlint --config .markdownlint.jsonc "**/*.md" "!node_modules/**/*" "!.git/**/*"
+          ./node_modules/.bin/markdownlint --config .markdownlint.jsonc --ignore node_modules --ignore .git "**/*.md"
 
   shellcheck:
     name: shellcheck
