@@ -25,7 +25,7 @@ Ordered task list for Backend-k8s-Arena. Each task is one branch, one PR, and is
 - Branch protection recommendation documented (require PR + green CI).
 - **Done when:** a PR triggers the workflows and they pass on the scaffold.
 
-### [ ] T02 API contract and canonical SQL
+### [x] T02 API contract and canonical SQL
 
 - Branch: `feat/t02-spec`
 - `spec/API.md`: all endpoints, JSON shapes, status codes, auth scheme (HMAC-signed token `<user_id>.<signature>`, secret via `TOKEN_SECRET`), error format, validation rules (post length etc.), idempotent like behaviour.
