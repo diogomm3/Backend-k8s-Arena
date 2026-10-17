@@ -24,7 +24,7 @@ Error responses use the error format in §4.
 
 ### 2.1 Token Format
 
-```
+```text
 <user_id>.<base64url_signature>
 ```
 
@@ -211,6 +211,7 @@ Precedence order (first match wins):
 | 5 | Any other DB error | 500 | `INTERNAL` |
 
 **Notes:**
+
 - `GET /feed`, `GET /posts/{id}`, `POST /posts/{id}/like` **ignore request body and Content-Type**.
 - All endpoints return `Content-Type: application/json` (errors included).
 
@@ -257,7 +258,7 @@ Ignored. No validation.
 
 All `created_at` fields are RFC3339 / ISO 8601 with **fixed 3 fractional digits** and trailing `Z`:
 
-```
+```text
 YYYY-MM-DDTHH:MM:SS.mmmZ
 ```
 
