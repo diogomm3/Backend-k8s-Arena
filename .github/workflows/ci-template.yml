@@ -39,7 +39,7 @@ jobs:
   backend-ci:
     name: Backend CI (${{ matrix.backend }})
     needs: detect-changes
-    if: needs.detect-changes.outputs.matrix != '{"include": []}'
+    if: "needs.detect-changes.outputs.matrix != '{\"include\": []}'"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
