@@ -20,9 +20,8 @@ jobs:
         uses: actions/setup-node@v4  # v4.0.0
         with:
           node-version: '20'
-          cache: 'npm'
       - name: Install markdownlint-cli2
-        run: npm ci --no-audit --no-fund 2>/dev/null || npm install -g markdownlint-cli2@0.17.1
+        run: npm install -g markdownlint-cli2@0.17.1
       - name: Run markdownlint
         run: markdownlint-cli2 --config .markdownlint.jsonc "**/*.md" "#node_modules/**/*" "#.git/**/*"
 
@@ -33,9 +32,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       - name: Install shellcheck
-        run: sudo apt-get update && sudo apt-get install -y shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+          # Verify shellcheck version supports --rcfile (needs >= 0.8.0)
+          shellcheck --version
       - name: Run shellcheck
-        run: shellcheck --rcfile .shellcheckrc --exclude=SC2034,SC2155 $(find . -name "*.sh" -not -path "./.git/*")
+        run: shellcheck --exclude=SC2034,SC2155 $(find . -name "*.sh" -not -path "./.git/*")
 
   yamllint:
     name: yamllint
@@ -44,6 +47,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       - name: Install yamllint
-        run: sudo apt-get update && sudo apt-get install -y yamllint
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y yamllint
       - name: Run yamllint
         run: yamllint -c .yamllint.yml .
+
