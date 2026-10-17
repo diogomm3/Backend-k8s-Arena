@@ -39,14 +39,16 @@ Full benchmarks are **never** run in CI (shared runners are too noisy). Only sho
 
 ## 5. Coding rules
 
-**General**
+### General
+
 - Pin all versions (base images, language runtimes, dependencies, GitHub Actions). No `latest` tags.
 - No secrets in the repo. Configuration through environment variables documented in `spec/ENV.md`.
 - Prefer boring, standard-library-first, readable code. Comment the *why*, not the *what*.
 - Scripts: Bash with `set -euo pipefail`, idempotent where possible, clear error messages, passing `shellcheck`.
 - Every new command or option is documented in `README.md`.
 
-**Backends (fairness rules; do not break these)**
+### Backends (fairness rules; do not break these)
+
 - Implement exactly `spec/API.md`. Use the canonical SQL from `spec/queries.sql` verbatim.
 - **No ORM, no caching, one DB query per request**, pool size `DB_POOL_SIZE` (default 10) **per process**.
 - Auth tokens verified in-process (HMAC), no DB lookup.
@@ -54,14 +56,17 @@ Full benchmarks are **never** run in CI (shared runners are too noisy). Only sho
 - Production build/mode only, access logging off in the hot path, graceful shutdown, `GET /health` without DB access.
 - Same behaviour as every other backend; the conformance suite is the judge.
 
-**Docker**
+### Docker
+
 - Multi-stage builds, small final image, non-root user, `.dockerignore`, `HEALTHCHECK`, deterministic builds, multi-arch.
 - Resource limits come from the profile files, never hard-coded in images.
 
-**Kubernetes**
+### Kubernetes
+
 - Standard Kubernetes only: no dependency on k3s/k3d-specific defaults (e.g. Traefik). Resource requests/limits, readiness/liveness probes, labels on everything. Kustomize for variants.
 
-**Benchmarking**
+### Benchmarking
+
 - Never run load tests against anything but local/own infrastructure.
 - Results are written in the documented `summary.json` schema with full environment info (CPU, cores, RAM, OS, tool versions, profile). Never hand-edit results.
 - Never present local-laptop results as official.
@@ -76,7 +81,7 @@ Full benchmarks are **never** run in CI (shared runners are too noisy). Only sho
 
 Post this in the PR description and in the chat when the task is finished:
 
-```
+```markdown
 ## Task <id>: <title>
 **Status:** done / blocked / partially done
 **What I did:** (bullets)

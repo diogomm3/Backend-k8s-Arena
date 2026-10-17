@@ -7,6 +7,7 @@ One folder per stack (T10-T12, T8x):
 - `node/` — Express 5 + pg (T12)
 
 Each backend contains:
+
 - Source code
 - Multi-stage `Dockerfile` (linux/amd64 + linux/arm64, non-root, HEALTHCHECK)
 - `README.md` — Stack, versions, process model, non-default settings

@@ -11,6 +11,7 @@ Ordered task list for Backend-k8s-Arena. Each task is one branch, one PR, and is
 ## Phase 0: Foundation
 
 ### [x] T00 Repo scaffold
+
 - Branch: `feat/t00-scaffold`
 - Already in the repo (do not recreate): `LICENSE` (Apache-2.0), `README.md`, `AGENT.md`, `docs/IMPLEMENTATION_PLAN.md`.
 - Create the rest of the folder layout from the README (including `scenarios/`), with `.gitkeep` or short placeholder READMEs where needed, `.gitignore`, `.editorconfig`, `.dockerignore` template, PR template, issue templates.
