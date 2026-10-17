@@ -20,10 +20,10 @@ jobs:
         uses: actions/setup-node@v4  # v4.0.0
         with:
           node-version: '20'
-      - name: Install markdownlint
-        run: npm install -g markdownlint@0.34.0 && echo "$(npm bin -g)" >> $GITHUB_PATH
-      - name: Run markdownlint
-        run: markdownlint --config .markdownlint.jsonc "**/*.md" "!node_modules/**/*" "!.git/**/*"
+      - name: Install and run markdownlint
+        run: |
+          npm install markdownlint@0.34.0
+          npx markdownlint --config .markdownlint.jsonc "**/*.md" "!node_modules/**/*" "!.git/**/*"
 
   shellcheck:
     name: shellcheck
