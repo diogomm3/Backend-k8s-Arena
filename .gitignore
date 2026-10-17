@@ -1,0 +1,60 @@
+# Results (ignored except curated samples)
+results/*
+!results/.gitkeep
+!results/samples/
+
+# Zone.Identifier files (Windows alternate data streams)
+*:Zone.Identifier
+
+# Dependencies
+node_modules/
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+*.whl
+
+# Go
+vendor/
+*.exe
+*.test
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+.docker/
+
+# Environment files (secrets)
+.env
+.env.local
+.env.*.local
+
+# k6
+k6-results/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
