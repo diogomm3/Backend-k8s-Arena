@@ -18,7 +18,7 @@ Ordered task list for Backend-k8s-Arena. Each task is one branch, one PR, and is
 - Placeholder `run.sh` with `help` only.
 - **Done when:** repo cloneable, `./run.sh help` works, layout matches README.
 
-### [ ] T01 CI skeleton
+### [x] T01 CI skeleton
 
 - Branch: `feat/t01-ci`
 - GitHub Actions: markdown lint, `shellcheck` for scripts, YAML lint, a path-filtered matrix job template that later tasks extend per backend.
