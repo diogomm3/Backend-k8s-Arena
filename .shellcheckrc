@@ -1,0 +1,6 @@
+# shellcheck configuration
+# Enable all checks
+enable=all
+
+# Shell to check (bash)
+shell=bash
