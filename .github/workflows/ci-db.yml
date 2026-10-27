@@ -1,0 +1,46 @@
+name: DB Seed & Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  db-seed-check:
+    name: DB Seed & Check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16.8-alpine@sha256:9f8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8
+        env:
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+
+      - name: Apply schema & small seed
+        run: |
+          psql -h localhost -U postgres -d test -f db/schema.sql
+          psql -h localhost -U postgres -d test \
+            -v n_users=1000 \
+            -v n_posts=10000 \
+            -v n_likes_total=40000 \
+            -f db/seed.sql
+
+      - name: Run db-check
+        run: ./run.sh db-check
+        env:
+          DATABASE_URL: postgres://postgres:test@localhost:5432/test

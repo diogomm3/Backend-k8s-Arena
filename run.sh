@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Backend-k8s-Arena - single entry point for all operations
-# Version: 0.1.0 (scaffold)
+# Version: 0.2.0 (T03 database)
 
 print_help() {
     cat <<'EOF'
@@ -14,10 +14,12 @@ Usage:
 Commands:
   help                 Show this help message
 
-  # Database (planned - not implemented yet)
-  db-up                Start PostgreSQL container
-  db-seed              Run deterministic seed (50k users, 500k posts, ~2M likes)
-  db-reset             Drop and recreate database with fresh seed
+  # Database
+  db-up                Start PostgreSQL container (creates/seeds template DB)
+  db-seed [--force]    Run deterministic seed (50k users, 500k posts, 2M likes)
+  db-reset             Drop and recreate working DB from template
+  db-down [--volumes]  Stop container (--volumes removes data volume)
+  db-check             Verify DB state (counts, checksums, canonical queries)
 
   # Docker (planned - not implemented yet)
   up --backend <name>  Start Postgres + seed + backend (Docker Compose)
@@ -47,6 +49,13 @@ Options:
 
 Examples:
   ./run.sh help
+  ./run.sh db-up
+  ./run.sh db-seed
+  ./run.sh db-seed --force
+  ./run.sh db-reset
+  ./run.sh db-check
+  ./run.sh db-down
+  ./run.sh db-down --volumes
   ./run.sh up --backend go
   ./run.sh conformance --backend python
   ./run.sh bench --backend go --mode docker --profile base
@@ -57,7 +66,7 @@ Examples:
   ./run.sh bench --backend go --mode k8s-hpa --spike 3x
   ./run.sh down
 
-Environment variables (see spec/ENV.md when available):
+Environment variables (see spec/ENV.md):
   PORT                 HTTP port (default: 8080)
   DATABASE_URL         PostgreSQL connection string
   DB_POOL_SIZE         Connection pool size per process (default: 10)
@@ -82,7 +91,27 @@ main() {
         help|-h|--help)
             print_help
             ;;
-        db-up|db-seed|db-reset|up|down|conformance|bench|k8s-up|k8s-down|observability-up|observability-down)
+        db-up)
+            shift
+            exec /home/diogo/Backend-k8s-Arena/db/db-up.sh "$@"
+            ;;
+        db-seed)
+            shift
+            exec /home/diogo/Backend-k8s-Arena/db/db-seed.sh "$@"
+            ;;
+        db-reset)
+            shift
+            exec /home/diogo/Backend-k8s-Arena/db/db-reset.sh "$@"
+            ;;
+        db-down)
+            shift
+            exec /home/diogo/Backend-k8s-Arena/db/db-down.sh "$@"
+            ;;
+        db-check)
+            shift
+            exec /home/diogo/Backend-k8s-Arena/db/db-check.sh "$@"
+            ;;
+        up|down|conformance|bench|k8s-up|k8s-down|observability-up|observability-down)
             not_implemented "$1"
             ;;
         *)
