@@ -1,0 +1,20 @@
+QUERY PLAN
+---------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.31..8.35 rows=1 width=85) (actual time=3.612..3.616 rows=1 loops=1)
+   Buffers: shared hit=60 read=1 dirtied=5
+   CTE ins
+     ->  Insert on posts  (cost=0.00..0.02 rows=1 width=48) (actual time=3.505..3.506 rows=1 loops=1)
+           Buffers: shared hit=57 read=1 dirtied=5
+           ->  Result  (cost=0.00..0.02 rows=1 width=48) (actual time=2.937..2.937 rows=1 loops=1)
+                 Buffers: shared hit=12 read=1 dirtied=1
+   ->  CTE Scan on ins i  (cost=0.00..0.02 rows=1 width=48) (actual time=3.508..3.510 rows=1 loops=1)
+         Buffers: shared hit=57 read=1 dirtied=5
+   ->  Index Scan using users_pkey on users u  (cost=0.29..8.31 rows=1 width=13) (actual time=0.035..0.035 rows=1 loops=1)
+         Index Cond: (id = i.user_id)
+         Buffers: shared hit=3
+ Planning:
+   Buffers: shared hit=200 read=1
+ Planning Time: 3.520 ms
+ Trigger for constraint posts_user_id_fkey: time=0.786 calls=1
+ Execution Time: 4.544 ms
+(17 rows)

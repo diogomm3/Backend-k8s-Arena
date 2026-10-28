@@ -1,0 +1,23 @@
+QUERY PLAN
+-------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop Left Join  (cost=5.36..21.42 rows=1 width=83) (actual time=0.309..0.313 rows=1 loops=1)
+   Buffers: shared hit=11
+   ->  Nested Loop  (cost=0.71..16.75 rows=1 width=55) (actual time=0.113..0.115 rows=1 loops=1)
+         Buffers: shared hit=7
+         ->  Index Scan using posts_pkey on posts  (cost=0.42..8.44 rows=1 width=46) (actual time=0.049..0.051 rows=1 loops=1)
+               Index Cond: (id = $1)
+               Buffers: shared hit=4
+         ->  Index Scan using users_pkey on users u  (cost=0.29..8.31 rows=1 width=13) (actual time=0.060..0.060 rows=1 loops=1)
+               Index Cond: (id = posts.user_id)
+               Buffers: shared hit=3
+   ->  Aggregate  (cost=4.65..4.66 rows=1 width=4) (actual time=0.129..0.129 rows=1 loops=1)
+         Buffers: shared hit=4
+         ->  Index Only Scan using likes_pkey on likes  (cost=0.43..4.62 rows=11 width=0) (actual time=0.118..0.121 rows=14 loops=1)
+               Index Cond: (post_id = posts.id)
+               Heap Fetches: 0
+               Buffers: shared hit=4
+ Planning:
+   Buffers: shared hit=321
+ Planning Time: 4.086 ms
+ Execution Time: 0.443 ms
+(20 rows)

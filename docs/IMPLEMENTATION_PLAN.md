@@ -33,7 +33,7 @@ Ordered task list for Backend-k8s-Arena. Each task is one branch, one PR, and is
 - `spec/ENV.md`: required env vars (`PORT`, `DATABASE_URL`, `DB_POOL_SIZE=10`, `TOKEN_SECRET`).
 - **Done when:** the human approves the spec; nothing else is built before this is signed off.
 
-### [ ] T03 Database schema and deterministic seed
+### [x] T03 Database schema and deterministic seed
 
 - Branch: `feat/t03-database`
 - `db/schema.sql` (users, posts, likes, all indexes needed by the canonical queries).
