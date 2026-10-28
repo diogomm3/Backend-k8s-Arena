@@ -6,15 +6,17 @@
 # Runs canonical queries on throwaway DB to verify behavior
 set -euo pipefail
 
+# Find repo root (works both locally and in CI)
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 # Default connection (local container)
 DATABASE_URL="${DATABASE_URL:-postgres://postgres:arena_local@127.0.0.1:5432/arena}"
 WORK_DB="arena"
 TEMPLATE_DB="arena_template"
 CONTAINER_NAME="arena-postgres"
 
-# Expected checksums for small seed (from db/checksums/small-seed.json)
-# Format: {"users": "checksum", "posts": "checksum", "likes": "checksum"}
-SMALL_SEED_CHECKSUMS_FILE="/home/diogo/Backend-k8s-Arena/db/checksums/small-seed.json"
+# Expected checksums for small seed
+SMALL_SEED_CHECKSUMS_FILE="${REPO_ROOT}/db/checksums/small-seed.json"
 
 # Extract connection params from DATABASE_URL for psql
 # postgres://user:pass@host:port/db
