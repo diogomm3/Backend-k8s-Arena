@@ -32,6 +32,8 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
 
       - name: Apply schema & small seed
+        env:
+          PGPASSWORD: test
         run: |
           psql -h localhost -U postgres -d test -f db/schema.sql
           psql -h localhost -U postgres -d test \
