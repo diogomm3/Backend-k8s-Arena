@@ -4,6 +4,9 @@ set -euo pipefail
 # Backend-k8s-Arena - single entry point for all operations
 # Version: 0.2.0 (T03 database)
 
+# Resolve script directory (works both locally and in CI)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 print_help() {
     cat <<'EOF'
 Backend-k8s-Arena - Polyglot backend benchmark runner
@@ -93,23 +96,23 @@ main() {
             ;;
         db-up)
             shift
-            exec /home/diogo/Backend-k8s-Arena/db/db-up.sh "$@"
+            exec "${SCRIPT_DIR}/db/db-up.sh" "$@"
             ;;
         db-seed)
             shift
-            exec /home/diogo/Backend-k8s-Arena/db/db-seed.sh "$@"
+            exec "${SCRIPT_DIR}/db/db-seed.sh" "$@"
             ;;
         db-reset)
             shift
-            exec /home/diogo/Backend-k8s-Arena/db/db-reset.sh "$@"
+            exec "${SCRIPT_DIR}/db/db-reset.sh" "$@"
             ;;
         db-down)
             shift
-            exec /home/diogo/Backend-k8s-Arena/db/db-down.sh "$@"
+            exec "${SCRIPT_DIR}/db/db-down.sh" "$@"
             ;;
         db-check)
             shift
-            exec /home/diogo/Backend-k8s-Arena/db/db-check.sh "$@"
+            exec "${SCRIPT_DIR}/db/db-check.sh" "$@"
             ;;
         up|down|conformance|bench|k8s-up|k8s-down|observability-up|observability-down)
             not_implemented "$1"
