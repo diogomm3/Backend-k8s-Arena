@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # Configuration (overridable via env)
-POSTGRES_IMAGE="${POSTGRES_IMAGE:-postgres:16.8-alpine@sha256:2459b9c2b4c1c8e8d8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8}"
+POSTGRES_IMAGE="${POSTGRES_IMAGE:-postgres:16.8-alpine@sha256:3b057e1c2c6dfee60a30950096f3fab33be141dbb0fdd7af3d477083de94166c}"
 POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-arena_local}"
 CONTAINER_NAME="arena-postgres"
 VOLUME_NAME="arena-pgdata"
@@ -11,10 +11,8 @@ PORT="5432"
 TEMPLATE_DB="arena_template"
 
 # Find current 16.x patch digest
-# Verified via: docker pull postgres:16-alpine && docker inspect --format='{{.RepoDigests}}'
-# As of 2026-10-19, postgres:16-alpine points to 16.8
-# Actual digest: sha256:9f8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8
-# We'll use the tag and let docker resolve, but pin in CI
+# Verified via: docker pull postgres:16.8-alpine && docker inspect --format='{{.RepoDigests}}'
+# As of 2026-10-27, postgres:16.8-alpine digest: sha256:3b057e1c2c6dfee60a30950096f3fab33be141dbb0fdd7af3d477083de94166c
 
 # Check if container already running
 if docker ps --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then

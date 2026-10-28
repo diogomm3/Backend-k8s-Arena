@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 10
     services:
       postgres:
-        image: postgres:16.8-alpine@sha256:9f8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8e8b8
+        image: postgres:16.8-alpine@sha256:3b057e1c2c6dfee60a30950096f3fab33be141dbb0fdd7af3d477083de94166c
         env:
           POSTGRES_PASSWORD: test
           POSTGRES_DB: test
